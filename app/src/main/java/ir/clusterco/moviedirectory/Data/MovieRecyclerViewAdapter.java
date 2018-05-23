@@ -3,6 +3,7 @@ package ir.clusterco.moviedirectory.Data;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.provider.ContactsContract;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,13 +13,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
 
+import java.io.File;
 import java.util.List;
 import java.util.PriorityQueue;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
 
+import ir.clusterco.moviedirectory.Activities.MovieDetailActivity;
 import ir.clusterco.moviedirectory.Model.Movie;
 import ir.clusterco.moviedirectory.R;
+import okhttp3.OkHttpClient;
 
 /**
  * Created by VS on 5/21/2018.
@@ -28,12 +34,14 @@ public class MovieRecyclerViewAdapter extends RecyclerView.Adapter<MovieRecycler
 
     private  Context context;
     private List<Movie> movieList;
+    private Thread thread;
+
+
+
 
     public MovieRecyclerViewAdapter(Context context, List<Movie> movies) {
         this.context=context;
         movieList=movies;
-
-
     }
 
     @Override
@@ -46,26 +54,27 @@ public class MovieRecyclerViewAdapter extends RecyclerView.Adapter<MovieRecycler
        //and set layout to work in ViewHolder
         return new ViewHolder(view,context);
     }
-
+    String repLink;String posterLink;
     @Override
-    public void onBindViewHolder(MovieRecyclerViewAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(final MovieRecyclerViewAdapter.ViewHolder holder, int position) {
+
+
+
       //get the position of clicked movie
         Movie movie=movieList.get(position);
         //image link
-        String posterLink =movie.getPoster();
-        String replacedposterLink = posterLink.replace("https", "http");
+         posterLink =movie.getPoster();
+         repLink = posterLink.replace("https", "http");
 
         holder.title.setText(movie.getTitle());
         holder.type.setText(movie.getMovieType());
 
-
-        Picasso.with(context)
-                .load(replacedposterLink)
-                .placeholder(android.R.drawable.ic_btn_speak_now).fit()
+        Glide.with(context)
+                .load(posterLink)
                 .into(holder.poster);
 
-        holder.year.setText(movie.getYear());
-    }
+            holder.year.setText(movie.getYear());
+        }
 
     @Override
     public int getItemCount() {
@@ -76,10 +85,11 @@ public class MovieRecyclerViewAdapter extends RecyclerView.Adapter<MovieRecycler
 
         TextView title;
         ImageView poster;
+        ImageView iv;
         TextView year;
         TextView type;
 
-        public ViewHolder(View itemView,Context ctx) {
+        public ViewHolder(View itemView,final Context ctx) {
             super(itemView);
             context = ctx;
 
@@ -92,7 +102,16 @@ public class MovieRecyclerViewAdapter extends RecyclerView.Adapter<MovieRecycler
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(context, "Row tapped: "+title.getText(), Toast.LENGTH_SHORT).show();
+
+                    Movie movie=movieList.get(getAdapterPosition());
+
+                    //send data to another activity
+                    Intent intent=new Intent(context, MovieDetailActivity.class);
+                    intent.putExtra("movie",movie);
+
+                    ctx.startActivity(intent);
+                   // Toast.makeText(context, "Row tapped: "+ title.getText(), Toast.LENGTH_SHORT).show();
+                    //Picasso.get().load("http://webneel.com/wallpaper/sites/default/files/images/04-2013/island-beach-scenery-wallpaper.jpg").into(iv);
                 }
             });
         }
