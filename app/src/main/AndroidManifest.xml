@@ -21,16 +21,24 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".Activities.MainActivity">
+
+        </activity>
+        <activity android:name=".Activities.MovieDetailActivity" />
+        <activity
+            android:name=".menu_main"
+            android:label="@string/title_activity_menu_main"></activity>
+
+        <activity
+            android:name=".Activities.Splash"
+            android:screenOrientation="sensorPortrait"
+            android:label="Movie">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activities.MovieDetailActivity" />
-        <activity
-            android:name=".menu_main"
-            android:label="@string/title_activity_menu_main"></activity>
+
     </application>
 
 </manifest>
